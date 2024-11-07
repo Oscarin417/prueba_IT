@@ -200,19 +200,31 @@ class User
     public function update()
     {
         $this->validateUpdate();
-        $sql = "UPDATE " . self::TABLA .
-        " SET nombres=:nombres, apellidos=:apellidos, correo=:correo,
-        password=:password WHERE id=:id";
+
+        $sql = "UPDATE " . self::TABLA . " SET nombres=:nombres, apellidos=:apellidos, correo=:correo";
+        
+        if (!empty($this->password)) {
+            $sql .= ", password=:password";
+        }
+        
+        $sql .= " WHERE id=:id";
+        
         $con = new Conexion();
         $query = $con->prepare($sql);
+    
         $query->bindParam(":id", $this->id);
         $query->bindParam(":nombres", $this->nombres);
         $query->bindParam(":apellidos", $this->apellidos);
         $query->bindParam(":correo", $this->correo);
-        $query->bindParam(":password", password_hash($this->password, PASSWORD_BCRYPT));
+    
+        if (!empty($this->password)) {
+            $query->bindParam(":password", password_hash($this->password, PASSWORD_BCRYPT));
+        }
+    
         $query->execute();
         $con = null;
     }
+    
 
     //Eliminar
     public function delete()

@@ -22,7 +22,11 @@ try
     $u->setNombres($nombres);
     $u->setApellidos($apellidos);
     $u->setCorreo($correo);
-    $u->setPassword($password);
+
+    if (!empty($password)) {
+        $u->setPassword($password);
+    }
+
 
     $u->update();
 
